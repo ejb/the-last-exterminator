@@ -20,12 +20,12 @@ Bugs.prototype.run = function(){
         width: this.bounds.x,
         height: this.bounds.y
     });
-    
+        
         
     this.addBackground();
     this.addPlayer();
     this.stockBullets();
-    this.spawnBug();
+    this.spawnBugs();
 
     this.playerLayer.registerCollidable(this.player);
     this.enemies.forEach(function(en, i){
@@ -52,6 +52,7 @@ Bugs.prototype.run = function(){
 
 
 
+    console.log('a');
 
 
 
@@ -59,40 +60,45 @@ Bugs.prototype.run = function(){
         
         that.player.$updateDirection();
         
-        var enemy = that.enemies[0];
-        if (enemy.direction.y) {
-            enemy.moveUp();
-        } else {
-            enemy.moveDown();
-        }
-        
-        if (enemy.direction.x) {
-            enemy.moveLeft();
-        } else {
-            enemy.moveRight();
-        }
-        
-        
-        
-        var pos = enemy.pos;
-        if (pos.y < 50) {
-            enemy.direction.y = false;
-        } else if (pos.y > that.bounds.y - 50) {
-            enemy.direction.y = true;
-        }
-
-
-        if (pos.x < 50) {
-            enemy.direction.x = false;
-        } else if (pos.x > that.bounds.x - 50) {
-            enemy.direction.x = true;
-        }
-        
-        that.bullets.forEach(function(bullet, i){
-            
-            bullet.$move();
-            // console.log('moved');
+        that.enemies.forEach(function(enemy){
+            enemyAi(enemy, that);
         });
+        
+        that.bullets.forEach(function(bullet, i){    
+            bullet.$move();
+        });
+        
+        function enemyAi(en, that){
+            var enemy = en;
+            if (enemy.direction.y) {
+                enemy.moveUp();
+            } else {
+                enemy.moveDown();
+            }
+        
+            if (enemy.direction.x) {
+                enemy.moveLeft();
+            } else {
+                enemy.moveRight();
+            }
+        
+        
+        
+            var pos = enemy.pos;
+            if (pos.y < 50) {
+                enemy.direction.y = false;
+            } else if (pos.y > that.bounds.y - 50) {
+                enemy.direction.y = true;
+            }
+
+
+            if (pos.x < 50) {
+                enemy.direction.x = false;
+            } else if (pos.x > that.bounds.x - 50) {
+                enemy.direction.x = true;
+            }
+            
+        }
 
     });
     
@@ -114,6 +120,14 @@ Bugs.prototype.addBackground = function(){
         }
     });
     
+}
+
+Bugs.prototype.spawnBugs = function(){
+    this.enemyLayer = this.game.createLayer('enemies');
+    var numberOfBugs = 5;
+    for (var i = 0; i < 5; i++) {
+        this.spawnBug();
+    }
 }
 
 Bugs.prototype.addPlayer = function(){
@@ -161,9 +175,8 @@ Bugs.prototype.addPlayer = function(){
 Bugs.prototype.enemies = [];
 Bugs.prototype.spawnBug = function(){
     var game = this.game;
-    var enemyLayer = game.createLayer('enemies');
     var enemy = new PixelJS.Entity();
-    enemy.addToLayer(enemyLayer);
+    enemy.addToLayer(this.enemyLayer);
     var x = Math.random() * this.bounds.x;
     var y = Math.random() * this.bounds.y;
     enemy.pos = { x: x, y: y };
@@ -182,7 +195,6 @@ Bugs.prototype.spawnBug = function(){
         y: true,
         x: true
     }
-    this.enemyLayer = enemyLayer;
 }
 
 Bugs.prototype.playerCollision = function(entity){
