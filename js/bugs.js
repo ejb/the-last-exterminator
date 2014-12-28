@@ -27,6 +27,7 @@ Bugs.prototype.run = function(){
     this.stockBullets();
     this.spawnBugs();
     this.spawnBuildings();
+    this.spawnCollapsedBuildings();
 
     this.playerLayer.registerCollidable(this.player);
     this.enemies.forEach(function(en, i){
@@ -34,6 +35,9 @@ Bugs.prototype.run = function(){
     });
     this.bullets.forEach(function(bullet, i){
         that.bulletLayer.registerCollidable(bullet);
+    });
+    this.buildings.forEach(function(building, i){
+        that.buildingLayer.registerCollidable(building);
     });
 
     /* TESTBED 
@@ -139,6 +143,13 @@ Bugs.prototype.spawnBuildings = function(){
     }
 }
 
+Bugs.prototype.spawnCollapsedBuildings = function(){
+    var numberOfCollapsedBuildings = 5;
+    for (var i = 0; i < 5; i++) {
+        this.spawnCollapsedBuilding();
+    }
+}
+
 
 Bugs.prototype.addPlayer = function(){
     var that = this;
@@ -209,6 +220,7 @@ Bugs.prototype.spawnBug = function(){
 
 Bugs.prototype.buildings = [];
 Bugs.prototype.spawnBuilding = function(){
+    var that = this;
     var game = this.game;
     var building = new PixelJS.Entity();
     building.addToLayer(this.buildingLayer);
@@ -220,11 +232,20 @@ Bugs.prototype.spawnBuilding = function(){
     building.asset = new PixelJS.Sprite();
     building.asset.prepare({ 
         name: 'building.png', 
-        frames: 3, 
-        rows: 4,
+        frames: 2,
+        rows: 1,
         speed: 100,
-        defaultFrame: 1
+        defaultFrame: 0
     });
+    building.$collapsed = false;
+    building.$collapse = function(index){
+        if (this.$collapsed) {
+            return;
+        }
+        that.collapsedBuildings[index].moveTo(this.pos.x, this.pos.y);
+        console.log( that.collapsedBuildings[index], this.pos );
+        this.dispose();
+    }
     this.buildings.push(building);
     building.direction = {
         y: true,
@@ -232,15 +253,32 @@ Bugs.prototype.spawnBuilding = function(){
     }
 }
 
+Bugs.prototype.collapsedBuildings = [];
+Bugs.prototype.spawnCollapsedBuilding = function(){
+    var game = this.game;
+    var building = new PixelJS.Entity();
+    building.addToLayer(this.buildingLayer);
+    building.pos = { x: -1000, y: -1000 };
+    building.size = { width: 128, height: 128 };
+    building.asset = new PixelJS.Sprite();
+    building.asset.prepare({ 
+        name: 'building2.png', 
+        frames: 2,
+        rows: 1,
+        speed: 100,
+        defaultFrame: 0
+    });
+    this.collapsedBuildings.push(building);
+}
+
 
 Bugs.prototype.playerCollision = function(entity){
     var that = this;
     var enemies = this.enemies;
-    console.log(enemies);
     for (var i = 0; i < enemies.length; i++) {
         if (entity === enemies[i]) {
-            console.log('Ouch!');
-            jumpBack(that.player);
+            // console.log('Ouch!');
+            // jumpBack(that.player);
         }
     }
     
@@ -334,12 +372,20 @@ Bugs.prototype.fireBullet = function(newPos){
 Bugs.prototype.bulletImpact = function(entity){
     var that = this;
     var enemies = this.enemies;
+    var buildings = this.buildings;
     // console.log(enemies);
     for (var i = 0; i < enemies.length; i++) {
         if (entity === enemies[i]) {
             var enemy = enemies[i];
             // console.log('Bug hit!');
             enemy.dispose();
+        }
+    }
+    var buildingsHit = [];
+    for (var i = 0; i < buildings.length; i++) {
+        if ((entity === buildings[i])) {
+            var building = buildings[i];
+            building.$collapse(i);
         }
     }
 
