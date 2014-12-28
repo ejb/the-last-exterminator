@@ -215,11 +215,11 @@ Bugs.prototype.spawnBuilding = function(){
     var x = Math.random() * this.bounds.x;
     var y = Math.random() * this.bounds.y;
     building.pos = { x: x, y: y };
-    building.size = { width: 32, height: 32 };
+    building.size = { width: 128, height: 128 };
     building.velocity = { x: 50, y: 50 };
-    building.asset = new PixelJS.AnimatedSprite();
+    building.asset = new PixelJS.Sprite();
     building.asset.prepare({ 
-        name: 'char.png', 
+        name: 'building.png', 
         frames: 3, 
         rows: 4,
         speed: 100,
