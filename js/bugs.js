@@ -26,6 +26,7 @@ Bugs.prototype.run = function(){
     this.addPlayer();
     this.stockBullets();
     this.spawnBugs();
+    this.spawnBuildings();
 
     this.playerLayer.registerCollidable(this.player);
     this.enemies.forEach(function(en, i){
@@ -130,6 +131,15 @@ Bugs.prototype.spawnBugs = function(){
     }
 }
 
+Bugs.prototype.spawnBuildings = function(){
+    this.buildingLayer = this.game.createLayer('buildings');
+    var numberOfBuildings = 5;
+    for (var i = 0; i < 5; i++) {
+        this.spawnBuilding();
+    }
+}
+
+
 Bugs.prototype.addPlayer = function(){
     var that = this;
     var game = this.game;
@@ -196,6 +206,32 @@ Bugs.prototype.spawnBug = function(){
         x: true
     }
 }
+
+Bugs.prototype.buildings = [];
+Bugs.prototype.spawnBuilding = function(){
+    var game = this.game;
+    var building = new PixelJS.Entity();
+    building.addToLayer(this.buildingLayer);
+    var x = Math.random() * this.bounds.x;
+    var y = Math.random() * this.bounds.y;
+    building.pos = { x: x, y: y };
+    building.size = { width: 32, height: 32 };
+    building.velocity = { x: 50, y: 50 };
+    building.asset = new PixelJS.AnimatedSprite();
+    building.asset.prepare({ 
+        name: 'char.png', 
+        frames: 3, 
+        rows: 4,
+        speed: 100,
+        defaultFrame: 1
+    });
+    this.buildings.push(building);
+    building.direction = {
+        y: true,
+        x: true
+    }
+}
+
 
 Bugs.prototype.playerCollision = function(entity){
     var that = this;
