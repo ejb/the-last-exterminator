@@ -184,7 +184,7 @@ Bugs.prototype.spawnBug = function(){
     enemy.velocity = { x: 50, y: 50 };
     enemy.asset = new PixelJS.AnimatedSprite();
     enemy.asset.prepare({ 
-        name: 'char.png', 
+        name: 'bug.png', 
         frames: 3, 
         rows: 4,
         speed: 100,
