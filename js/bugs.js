@@ -113,12 +113,12 @@ Bugs.prototype.run = function(){
 Bugs.prototype.addBackground = function(){
     var game = this.game;
     var backgroundLayer = game.createLayer('background');
-    var grass = backgroundLayer.createEntity();
+    var floor = backgroundLayer.createEntity();
     backgroundLayer.static = true;
-    grass.pos = { x: 0, y: 0 };
-    grass.asset = new PixelJS.Tile();
-    grass.asset.prepare({
-        name: 'grass.png',
+    floor.pos = { x: 0, y: 0 };
+    floor.asset = new PixelJS.Tile();
+    floor.asset.prepare({
+        name: 'floor.png',
         size: { 
             width: 800, 
             height: 600 
@@ -162,10 +162,10 @@ Bugs.prototype.addPlayer = function(){
     player.velocity = { x: 100, y: 100 };
     player.asset = new PixelJS.AnimatedSprite();
     player.asset.prepare({ 
-        name: 'char.png', 
-        frames: 3, 
+        name: 'player_sheet.png', 
+        frames: 4, 
         rows: 4,
-        speed: 100,
+        speed: 70,
         defaultFrame: 1
     });
     
@@ -205,8 +205,8 @@ Bugs.prototype.spawnBug = function(){
     enemy.velocity = { x: 50, y: 50 };
     enemy.asset = new PixelJS.AnimatedSprite();
     enemy.asset.prepare({ 
-        name: 'bug.png', 
-        frames: 3, 
+        name: 'bug.png',
+        frames: 3,
         rows: 4,
         speed: 100,
         defaultFrame: 1
