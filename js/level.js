@@ -30,14 +30,14 @@ Level.prototype.run = function(){
     this.themeSound.prepare({ name: 'theme.wav' });
         
     this.addBackground();
+    this.numberOfBuildings = this.opts.buildings || Math.ceil(Math.random()*5);
+    this.spawnCollapsedBuildings();
+    this.spawnBugs();
     if (this.opts.noPlayer !== true) {
         this.addPlayer();
         this.stockBullets();        
     }
-    this.spawnBugs();
-    this.numberOfBuildings = this.opts.buildings || Math.ceil(Math.random()*5);
     this.spawnBuildings();
-    this.spawnCollapsedBuildings();
 
     if (this.opts.noPlayer !== true) {
         this.playerLayer.registerCollidable(this.player);
@@ -135,6 +135,7 @@ Level.prototype.spawnBuildings = function(){
 }
 
 Level.prototype.spawnCollapsedBuildings = function(){
+    this.cbuildingLayer = this.game.createLayer('cbuildings');
     for (var i = 0; i < this.numberOfBuildings; i++) {
         this.spawnCollapsedBuilding();
     }
@@ -239,6 +240,16 @@ Level.prototype.spawnBug = function(){
         }
         enemy.timeInDirection++;
         
+        var newVelocity = 30 + that.elapsedTime/800;
+        if (newVelocity > 300) {
+            newVelocity = 300;
+        }
+        // console.log(newVelocity)
+        enemy.velocity = {
+            x: newVelocity,
+            y: newVelocity
+        }
+        
         var pos = enemy.pos;
         if ((pos.y < 50) && (enemy.direction === PixelJS.Directions.Up)) {
             enemy.direction = PixelJS.Directions.Down;
@@ -322,7 +333,7 @@ Level.prototype.spawnBuilding = function(){
     this.buildingLocations[x+''+y] = true;
     console.log(x,y);
     building.pos = { x: x, y: y };
-    building.size = { width: 128, height: 128 };
+    building.size = { width: 112, height: 128 };
     building.velocity = { x: 50, y: 50 };
     building.asset = new PixelJS.Sprite();
     building.asset.prepare({ 
@@ -351,7 +362,7 @@ Level.prototype.collapsedBuildings = [];
 Level.prototype.spawnCollapsedBuilding = function(){
     var game = this.game;
     var building = new PixelJS.Entity();
-    building.addToLayer(this.buildingLayer);
+    building.addToLayer(this.cbuildingLayer);
     building.pos = { x: -1000, y: -1000 };
     building.size = { width: 128, height: 128 };
     building.asset = new PixelJS.Sprite();
@@ -360,7 +371,7 @@ Level.prototype.spawnCollapsedBuilding = function(){
         frames: 2,
         rows: 1,
         speed: 100,
-        defaultFrame: 0
+        defaultFrame: 1
     });
     this.collapsedBuildings.push(building);
 }
@@ -474,7 +485,7 @@ Level.prototype.fireBullet = function(newPos){
             bullet.$direction = that.player.$lastDirection;
             setTimeout(function(){
                 bullet.$end();
-            },300);
+            },1000);
         }
     })
 }

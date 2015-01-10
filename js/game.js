@@ -62,6 +62,8 @@ Game.prototype.startLevel = function(lno){
 
     new Level(callback, ldetails);
     
+    console.log('started');
+    
     window.location.hash = '';
 
 }
