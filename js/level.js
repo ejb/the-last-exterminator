@@ -66,44 +66,13 @@ Level.prototype.run = function(){
         that.player.$updateDirection();
         
         that.enemies.forEach(function(enemy){
-            enemyAi(enemy, that);
+            enemy.$ai(that);
         });
         
         that.bullets.forEach(function(bullet, i){    
             bullet.$move();
         });
         
-        function enemyAi(en, that){
-            var enemy = en;
-            if (enemy.direction.y) {
-                enemy.moveUp();
-            } else {
-                enemy.moveDown();
-            }
-        
-            if (enemy.direction.x) {
-                enemy.moveLeft();
-            } else {
-                enemy.moveRight();
-            }
-        
-        
-        
-            var pos = enemy.pos;
-            if (pos.y < 50) {
-                enemy.direction.y = false;
-            } else if (pos.y > that.bounds.y - 50) {
-                enemy.direction.y = true;
-            }
-
-
-            if (pos.x < 50) {
-                enemy.direction.x = false;
-            } else if (pos.x > that.bounds.x - 50) {
-                enemy.direction.x = true;
-            }
-            
-        }
 
     });
     
@@ -157,7 +126,7 @@ Level.prototype.addPlayer = function(){
     var playerLayer = game.createLayer('players');
     var player = new PixelJS.Player();
     player.addToLayer(playerLayer);
-    player.pos = { x: 200, y: 300 };
+    player.pos = { x: this.bounds.x/2, y: this.bounds.y/2 };
     player.size = { width: 32, height: 32 };
     player.velocity = { x: 100, y: 100 };
     player.asset = new PixelJS.AnimatedSprite();
@@ -202,19 +171,103 @@ Level.prototype.spawnBug = function(){
     var y = Math.random() * this.bounds.y;
     enemy.pos = { x: x, y: y };
     enemy.size = { width: 32, height: 32 };
-    enemy.velocity = { x: 50, y: 50 };
+    enemy.velocity = { x: 30, y: 30 }; // should be 50
     enemy.asset = new PixelJS.AnimatedSprite();
     enemy.asset.prepare({ 
         name: 'bug_sheet.png',
         frames: 2,
         rows: 4,
-        speed: 100,
+        speed: 80,
         defaultFrame: 1
     });
+    enemy.direction = this.ranDir();
+    enemy.timeInDirection = 0;
+    enemy.$moveUp = function(){
+        this.moveUp();
+        this.asset.row = 0;
+    }
+    enemy.$moveRight = function(){
+        this.moveRight();
+        this.asset.row = 2;
+    }
+    enemy.$moveLeft = function(){
+        this.moveLeft();
+        this.asset.row = 1;
+    }
+    enemy.$moveDown = function(){
+        this.moveDown();
+        this.asset.row = 3;
+    }
+    enemy.$reverse = function(){
+        
+    }
+    enemy.$ai = function(that){
+        
+        var num = Math.random() * 10 * enemy.timeInDirection;
+        if ((enemy.timeInDirection > 300) || (num > 300)) {
+            enemy.direction = that.ranDir();
+            enemy.timeInDirection = 0;
+        }
+        enemy.timeInDirection++;
+        
+        var pos = enemy.pos;
+        if ((pos.y < 50) && (enemy.direction === PixelJS.Directions.Up)) {
+            enemy.direction = PixelJS.Directions.Down;
+            enemy.timeInDirection = 0;
+        } else if ((pos.y > that.bounds.y - 50) && (enemy.direction === PixelJS.Directions.Down)) {
+            enemy.direction = PixelJS.Directions.Up;
+            enemy.timeInDirection = 0;
+        }
+        
+        if ((pos.x < 50) && (enemy.direction === PixelJS.Directions.Left)) {
+            console.log('far left')
+            enemy.direction = PixelJS.Directions.Right;
+            enemy.timeInDirection = 0;
+        } else if ((pos.x > that.bounds.x - 50) && (enemy.direction === PixelJS.Directions.Right)) {
+            console.log('far right')
+            enemy.direction = PixelJS.Directions.Left;
+            enemy.timeInDirection = 0;
+        }
+        
+        
+        enemy.asset.startAnimating();
+        switch (enemy.direction) {
+        case PixelJS.Directions.Left:
+            enemy.$moveLeft();
+            break;
+        case PixelJS.Directions.Right:
+            enemy.$moveRight();
+            break;
+        case PixelJS.Directions.Up:
+            enemy.$moveUp();
+            break;
+        case PixelJS.Directions.Down:
+            enemy.$moveDown();
+            break;
+        case false:
+            enemy.asset.stopAnimating();
+            break;
+        default:
+            
+        }
+        
+    }
     this.enemies.push(enemy);
-    enemy.direction = {
-        y: true,
-        x: true
+    window.lastbug = enemy;
+}
+
+Level.prototype.ranDir = function(){
+    var n = Math.random() * 5;
+    if (n < 1) {
+        return PixelJS.Directions.Up;
+    } else if (n < 2) {
+        return PixelJS.Directions.Down;
+    } else if (n < 3) {
+        return PixelJS.Directions.Left;
+    } else if (n < 4) {
+        return PixelJS.Directions.Right;
+    } else {
+        return false;
     }
 }
 
