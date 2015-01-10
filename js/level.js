@@ -240,7 +240,7 @@ Level.prototype.spawnBug = function(){
         enemy.timeInDirection++;
         
         var pos = enemy.pos;
-        if ((pos.y < 50) && (enemy.direction === PixelJS.Directions.Up)) {
+        if ((pos.y < 10) && (enemy.direction === PixelJS.Directions.Up)) {
             enemy.direction = PixelJS.Directions.Down;
             enemy.timeInDirection = 0;
         } else if ((pos.y > that.bounds.y - 50) && (enemy.direction === PixelJS.Directions.Down)) {
@@ -248,7 +248,7 @@ Level.prototype.spawnBug = function(){
             enemy.timeInDirection = 0;
         }
         
-        if ((pos.x < 50) && (enemy.direction === PixelJS.Directions.Left)) {
+        if ((pos.x < 10) && (enemy.direction === PixelJS.Directions.Left)) {
             // console.log('far left')
             enemy.direction = PixelJS.Directions.Right;
             enemy.timeInDirection = 0;
