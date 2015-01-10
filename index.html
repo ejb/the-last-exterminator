@@ -3,21 +3,45 @@
     <head>   
         <title>The Last Exterminator</title>
         <style type="text/css" media="screen">
-            body.ready {
-                background-color: #0f0071;
-                background-image: url('assets/sprites/splash.png');
-                background-position: middle;
-                background-repeat: no-repeat;
-                background-size: 100%;
-            }
-            body.ready.alt {
-                background-image: url('assets/sprites/splash2.png');
-            }
+        body {
+            background-color: #0f0071;   
+        }
+        #about {
+            position: absolute;
+            z-index: 2000000;
+            top: 10px;
+            right: 10px;
+            color: white;
+            width: 25%;
+            height: 10%;
+            text-align: right;
+            font-family: arial;
+            font-size: 10px;
+        }
+        .splash {
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+            z-index: 100;
+        }
+        .splash.ready {
+            background-color: rgba(15, 0, 133, 0.8);
+            background-image: url('assets/sprites/splash.png');
+            background-position: middle;
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+        .splash.ready.alt {
+            background-image: url('assets/sprites/splash2.png');
+        }
         </style>
     </head>
     <body>
-        <div id="game_container" style="width: 800px; height: 600px;">
-        </div>
+        <div id="game_container" style="width: 800px; height: 600px;"></div>
+        <div class="splash"></div>
+        <a id="about" target="_blank" href="">what is this game</a>
     </body>
     
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -27,31 +51,37 @@
     <script type="text/javascript">
         var game = new Game([
             {
+                noPlayer: true,
+                enemies: 50
+            },
+            {
                 enemies: 3
             },
             {
                 enemies: 5
             },
             {
-                enemies: 25
-            },
-            {
                 enemies: 50
             },
             {
-                enemies: 100
+                enemies: 100,
+                buildings: 2
             },
             {
-                enemies: 200
+                enemies: 200,
+                buildings: 12
             },
             {
-                enemies: 300
+                enemies: 300,
+                buildings: 7
             },
             {
-                enemies: 400
+                enemies: 400,
+                buildings: 10
             },
             {
-                enemies: 500
+                enemies: 500,
+                buildings: 1
             }
         ]);
     </script>

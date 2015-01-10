@@ -26,26 +26,32 @@ Level.prototype.run = function(){
     this.collapseSound.prepare({ name: 'collapse.wav' });
     this.crySound = this.game.createSound('cry');
     this.crySound.prepare({ name: 'cry.wav' });
-        
+    this.themeSound = this.game.createSound('theme');
+    this.themeSound.prepare({ name: 'theme.wav' });
         
     this.addBackground();
-    this.addPlayer();
-    this.stockBullets();
+    if (this.opts.noPlayer !== true) {
+        this.addPlayer();
+        this.stockBullets();        
+    }
     this.spawnBugs();
+    this.numberOfBuildings = this.opts.buildings || Math.ceil(Math.random()*5);
     this.spawnBuildings();
     this.spawnCollapsedBuildings();
 
-    this.playerLayer.registerCollidable(this.player);
-    this.enemies.forEach(function(en, i){
-        that.enemyLayer.registerCollidable(en);
-    });
-    this.bullets.forEach(function(bullet, i){
-        that.bulletLayer.registerCollidable(bullet);
-    });
-    this.buildings.forEach(function(building, i){
-        that.buildingLayer.registerCollidable(building);
-    });
-
+    if (this.opts.noPlayer !== true) {
+        this.playerLayer.registerCollidable(this.player);
+        this.enemies.forEach(function(en, i){
+            that.enemyLayer.registerCollidable(en);
+        });
+        this.bullets.forEach(function(bullet, i){
+            that.bulletLayer.registerCollidable(bullet);
+        });
+        this.buildings.forEach(function(building, i){
+            that.buildingLayer.registerCollidable(building);
+        });
+    }
+    
     /* TESTBED 
     
     var bullet = this.bulletLayer.createEntity();
@@ -71,16 +77,25 @@ Level.prototype.run = function(){
         that.elapsedTime = elapsedTime;
         that.dt = dt;
         
-        that.player.$updateDirection();
+        if (that.opts.noPlayer && !that.themePlayed) {
+            that.themeSound.play();
+            that.themePlayed = true;
+        }
+        
+        
+        if (that.opts.noPlayer !== true) {
+            that.player.$updateDirection();
+        }
         
         that.enemies.forEach(function(enemy){
             enemy.$ai(that);
         });
         
-        that.bullets.forEach(function(bullet, i){    
-            bullet.$move();
-        });
-        
+        if (that.opts.noPlayer !== true) {
+            that.bullets.forEach(function(bullet, i){    
+                bullet.$move();
+            });
+        }        
 
     });
     
@@ -111,8 +126,6 @@ Level.prototype.spawnBugs = function(){
         this.spawnBug();
     }
 }
-
-Level.prototype.numberOfBuildings = 12;
 
 Level.prototype.spawnBuildings = function(){
     this.buildingLayer = this.game.createLayer('buildings');
@@ -461,7 +474,7 @@ Level.prototype.fireBullet = function(newPos){
             bullet.$direction = that.player.$lastDirection;
             setTimeout(function(){
                 bullet.$end();
-            },1000);
+            },300);
         }
     })
 }

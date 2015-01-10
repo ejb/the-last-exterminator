@@ -13,13 +13,15 @@ Game.prototype.run = function(){
     var that = this;
     
     if ((window.location.hash.indexOf('ctd') > -1) && getURLParameter()) {
-        this.startLevel( getURLParameter()-1 );
+        this.startLevel( getURLParameter() );
     } else {
         
+        this.startLevel( 0 );
+
         window.location.search = '';
         
-        $('body').addClass('ready')
-        .keyup(function(e){
+        $('.splash').addClass('ready');
+        $('body').keyup(function(e){
            if(e.keyCode == 32){
                // user has pressed space
                setURLParameter(1);
@@ -27,7 +29,7 @@ Game.prototype.run = function(){
         });
         
         setInterval(function(){
-            $('body').toggleClass('alt');
+            $('.splash').toggleClass('alt');
         },700);
         
     }
