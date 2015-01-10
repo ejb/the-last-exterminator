@@ -169,6 +169,14 @@ Level.prototype.spawnBug = function(){
     enemy.addToLayer(this.enemyLayer);
     var x = Math.random() * this.bounds.x;
     var y = Math.random() * this.bounds.y;
+    while (
+        (x > this.bounds.x/2-100) && (x < this.bounds.x/2+100) &&
+        (y > this.bounds.y/2-100) && (y < this.bounds.y/2+100)
+    ) {
+        x = Math.random() * this.bounds.x;
+        y = Math.random() * this.bounds.y;
+    }
+    
     enemy.pos = { x: x, y: y };
     enemy.size = { width: 32, height: 32 };
     enemy.velocity = { x: 30, y: 30 }; // should be 50
