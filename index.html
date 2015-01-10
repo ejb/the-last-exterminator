@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
     <head>   
+        <title>The Last Exterminator</title>
+        <style type="text/css" media="screen">
+            body.ready {
+                background-color: #0f0071;
+                background-image: url('assets/sprites/splash.png');
+                background-position: middle;
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+            body.ready.alt {
+                background-image: url('assets/sprites/splash2.png');
+            }
+        </style>
     </head>
     <body>
         <div id="game_container" style="width: 800px; height: 600px;">
         </div>
     </body>
     
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="js/pixel.min.js"></script>
     <script src="js/game.js"></script>
     <script src="js/level.js"></script>
