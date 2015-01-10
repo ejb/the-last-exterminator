@@ -18,6 +18,14 @@ Level.prototype.run = function(){
         width: this.bounds.x,
         height: this.bounds.y
     });
+    
+    
+    this.shootSound = this.game.createSound('shoot');
+    this.shootSound.prepare({ name: 'shoot.wav' });
+    this.collapseSound = this.game.createSound('collapse');
+    this.collapseSound.prepare({ name: 'collapse.wav' });
+    this.crySound = this.game.createSound('cry');
+    this.crySound.prepare({ name: 'cry.wav' });
         
         
     this.addBackground();
@@ -313,11 +321,11 @@ Level.prototype.spawnBuilding = function(){
     });
     building.$collapsed = false;
     building.$collapse = function(index){
-        if (this.$collapsed) {
-            return;
-        }
+        console.log('collapse')
+        this.$collapsed = true;
         that.collapsedBuildings[index].moveTo(this.pos.x, this.pos.y);
         this.dispose();
+        that.collapseSound.play();
     }
     this.buildings.push(building);
     building.direction = {
@@ -443,6 +451,7 @@ Level.prototype.fireBullet = function(newPos){
     bullets.forEach(function(bullet){
         console.log(fired);
         if (!fired && !bullet.$fired) {
+            that.shootSound.play();
             bullet.$fired = true;
             fired = true;
             bullet.pos = {
@@ -466,6 +475,7 @@ Level.prototype.bulletImpact = function(entity){
         if (entity === enemies[i]) {
             var enemy = enemies[i];
             // console.log('Bug hit!');
+            this.crySound.play();
             enemy.dispose();
             this.enemies.splice(i, 1);
             console.log('xxxx', this.enemies, this.enemies.length);
@@ -479,7 +489,10 @@ Level.prototype.bulletImpact = function(entity){
     for (var i = 0; i < buildings.length; i++) {
         if ((entity === buildings[i])) {
             var building = buildings[i];
-            building.$collapse(i);
+            console.log(building.$collapsed, 'collapsed?');
+            if (building.$collapsed === false) {
+                building.$collapse(i);
+            }
         }
     }
 
