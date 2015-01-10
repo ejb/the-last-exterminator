@@ -30,14 +30,14 @@ Level.prototype.run = function(){
     this.themeSound.prepare({ name: 'theme.wav' });
         
     this.addBackground();
-    this.numberOfBuildings = this.opts.buildings || Math.ceil(Math.random()*5);
-    this.spawnCollapsedBuildings();
-    this.spawnBugs();
     if (this.opts.noPlayer !== true) {
         this.addPlayer();
         this.stockBullets();        
     }
+    this.spawnBugs();
+    this.numberOfBuildings = this.opts.buildings || Math.ceil(Math.random()*5);
     this.spawnBuildings();
+    this.spawnCollapsedBuildings();
 
     if (this.opts.noPlayer !== true) {
         this.playerLayer.registerCollidable(this.player);
@@ -135,7 +135,6 @@ Level.prototype.spawnBuildings = function(){
 }
 
 Level.prototype.spawnCollapsedBuildings = function(){
-    this.cbuildingLayer = this.game.createLayer('cbuildings');
     for (var i = 0; i < this.numberOfBuildings; i++) {
         this.spawnCollapsedBuilding();
     }
@@ -165,8 +164,8 @@ Level.prototype.addPlayer = function(){
     
     game.on('keyDown', function (keyCode) {
         if (keyCode === PixelJS.Keys.Space) {
-            console.log('fire!');
-            // console.log(that.spawnBullet);
+            // console.log('fire!');
+            // // console.log(that.spawnBullet);
             that.fireBullet( that.player.pos );
         }
     });
@@ -240,16 +239,6 @@ Level.prototype.spawnBug = function(){
         }
         enemy.timeInDirection++;
         
-        var newVelocity = 30 + that.elapsedTime/800;
-        if (newVelocity > 300) {
-            newVelocity = 300;
-        }
-        // console.log(newVelocity)
-        enemy.velocity = {
-            x: newVelocity,
-            y: newVelocity
-        }
-        
         var pos = enemy.pos;
         if ((pos.y < 50) && (enemy.direction === PixelJS.Directions.Up)) {
             enemy.direction = PixelJS.Directions.Down;
@@ -260,11 +249,11 @@ Level.prototype.spawnBug = function(){
         }
         
         if ((pos.x < 50) && (enemy.direction === PixelJS.Directions.Left)) {
-            console.log('far left')
+            // console.log('far left')
             enemy.direction = PixelJS.Directions.Right;
             enemy.timeInDirection = 0;
         } else if ((pos.x > that.bounds.x - 50) && (enemy.direction === PixelJS.Directions.Right)) {
-            console.log('far right')
+            // console.log('far right')
             enemy.direction = PixelJS.Directions.Left;
             enemy.timeInDirection = 0;
         }
@@ -324,16 +313,16 @@ Level.prototype.spawnBuilding = function(){
         
     var x = Math.floor( Math.random() * 4 ) * 200 + 20;
     var y = Math.floor( Math.random() * 3 ) * 200 + 30;
-    console.log(this.buildingLocations);
+    // console.log(this.buildingLocations);
     while (this.buildingLocations[x+''+y]) {
         x = Math.floor( Math.random() * 4 ) * 200 + 20;
         y = Math.floor( Math.random() * 3 ) * 200 + 30;
         
     }
     this.buildingLocations[x+''+y] = true;
-    console.log(x,y);
+    // console.log(x,y);
     building.pos = { x: x, y: y };
-    building.size = { width: 112, height: 128 };
+    building.size = { width: 128, height: 128 };
     building.velocity = { x: 50, y: 50 };
     building.asset = new PixelJS.Sprite();
     building.asset.prepare({ 
@@ -345,7 +334,7 @@ Level.prototype.spawnBuilding = function(){
     });
     building.$collapsed = false;
     building.$collapse = function(index){
-        console.log('collapse')
+        // console.log('collapse')
         this.$collapsed = true;
         that.collapsedBuildings[index].moveTo(this.pos.x, this.pos.y);
         this.dispose();
@@ -362,7 +351,7 @@ Level.prototype.collapsedBuildings = [];
 Level.prototype.spawnCollapsedBuilding = function(){
     var game = this.game;
     var building = new PixelJS.Entity();
-    building.addToLayer(this.cbuildingLayer);
+    building.addToLayer(this.buildingLayer);
     building.pos = { x: -1000, y: -1000 };
     building.size = { width: 128, height: 128 };
     building.asset = new PixelJS.Sprite();
@@ -371,7 +360,7 @@ Level.prototype.spawnCollapsedBuilding = function(){
         frames: 2,
         rows: 1,
         speed: 100,
-        defaultFrame: 1
+        defaultFrame: 0
     });
     this.collapsedBuildings.push(building);
 }
@@ -381,13 +370,13 @@ Level.prototype.playerCollision = function(entity){
     var that = this;
     this.recentlyHit = checkIfStillTimeout(this.recentlyHit, this.dt);
     var enemies = this.enemies;
-    // console.log(this.recentlyHit);
+    // // console.log(this.recentlyHit);
     if (this.recentlyHit === false) {
         for (var i = 0; i < enemies.length; i++) {
             if (entity === enemies[i]) {
                 this.playerHealth--;
                 this.endLevel('fail');
-                console.log('Ouch! Health now at '+this.playerHealth);
+                // console.log('Ouch! Health now at '+this.playerHealth);
                 this.recentlyHit = this.dt;
                 // jumpBack(that.player);
             }
@@ -404,10 +393,10 @@ Level.prototype.playerCollision = function(entity){
     function jumpBack(player){
         var pos = player.pos;
         if (player.direction == PixelJS.Directions.Left) {
-            console.log('Player is facing left');
+            // console.log('Player is facing left');
             pos.x += 50;
         } else if (player.direction == PixelJS.Directions.Right) {
-            console.log('Player is facing right');
+            // console.log('Player is facing right');
             pos.x -= 50;
         }
         player.moveTo( pos.x, pos.y, 1000 );
@@ -473,7 +462,7 @@ Level.prototype.fireBullet = function(newPos){
     var bullets = this.bullets;
     var fired = false;
     bullets.forEach(function(bullet){
-        console.log(fired);
+        // console.log(fired);
         if (!fired && !bullet.$fired) {
             that.shootSound.play();
             bullet.$fired = true;
@@ -485,7 +474,7 @@ Level.prototype.fireBullet = function(newPos){
             bullet.$direction = that.player.$lastDirection;
             setTimeout(function(){
                 bullet.$end();
-            },1000);
+            },300);
         }
     })
 }
@@ -494,17 +483,17 @@ Level.prototype.bulletImpact = function(entity){
     var that = this;
     var enemies = this.enemies;
     var buildings = this.buildings;
-    // console.log(enemies);
+    // // console.log(enemies);
     for (var i = 0; i < enemies.length; i++) {
         if (entity === enemies[i]) {
             var enemy = enemies[i];
-            // console.log('Bug hit!');
+            // // console.log('Bug hit!');
             this.crySound.play();
             enemy.dispose();
             this.enemies.splice(i, 1);
-            console.log('xxxx', this.enemies, this.enemies.length);
+            // console.log('xxxx', this.enemies, this.enemies.length);
             if (this.enemies.length === 0) {
-                console.log(this.endLevel);
+                // console.log(this.endLevel);
                 this.endLevel('win');
             }
         }
@@ -513,7 +502,7 @@ Level.prototype.bulletImpact = function(entity){
     for (var i = 0; i < buildings.length; i++) {
         if ((entity === buildings[i])) {
             var building = buildings[i];
-            console.log(building.$collapsed, 'collapsed?');
+            // console.log(building.$collapsed, 'collapsed?');
             if (building.$collapsed === false) {
                 building.$collapse(i);
             }
@@ -523,7 +512,7 @@ Level.prototype.bulletImpact = function(entity){
 }
 
 Level.prototype.endLevel = function(state){
-    console.log(this);
+    // console.log(this);
     this.callback(state);
-    console.log(this);
+    // console.log(this);
 }

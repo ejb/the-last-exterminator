@@ -12,7 +12,6 @@ var Game = function(levels){
 Game.prototype.run = function(){
     var that = this;
     
-    // alert(window.location.href);
     if ((window.location.hash.indexOf('ctd') > -1) && getURLParameter()) {
         this.startLevel( getURLParameter() );
     } else if (window.location.search !== '?/') {
@@ -61,9 +60,6 @@ Game.prototype.startLevel = function(lno){
     document.body.appendChild(el);
 
     new Level(callback, ldetails);
-    
-    console.log('started');
-    
     window.location.hash = '';
 
 }
@@ -80,7 +76,8 @@ function getURLParameter() {
     return n;
 }
 function setURLParameter(value){
-    var search = '?level=' + value + '/#ctd';
-    window.location.href = window.location.href.split('?')[0].replace('#','') + search;
+    var r = Math.floor(Math.random()*1000);
+    var search = '?level=' + value + '&c='+r+'/#ctd';
+    window.location = window.location.href.split('?')[0].replace('#','') + search, '_self';
 }
 
