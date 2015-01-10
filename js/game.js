@@ -16,7 +16,7 @@ Game.prototype.run = function(){
     if ((window.location.hash.indexOf('ctd') > -1) && getURLParameter()) {
         this.startLevel( getURLParameter() );
     } else if (window.location.search !== '?/') {
-        window.location.search = '';
+        window.location.search = '?/';
     } else {
         
         this.startLevel( 0 );
