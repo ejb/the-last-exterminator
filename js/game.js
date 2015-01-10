@@ -12,13 +12,15 @@ var Game = function(levels){
 Game.prototype.run = function(){
     var that = this;
     
+    // alert(window.location.href);
     if ((window.location.hash.indexOf('ctd') > -1) && getURLParameter()) {
         this.startLevel( getURLParameter() );
+    } else if (window.location.search !== '?/') {
+        window.location.search = '';
     } else {
         
         this.startLevel( 0 );
 
-        window.location.search = '';
         
         $('.splash').addClass('ready');
         $('body').keyup(function(e){
@@ -27,11 +29,11 @@ Game.prototype.run = function(){
                setURLParameter(1);
            }
         });
-        
+
         setInterval(function(){
             $('.splash').toggleClass('alt');
         },700);
-        
+
     }
 }
 
@@ -76,7 +78,7 @@ function getURLParameter() {
     return n;
 }
 function setURLParameter(value){
-    var search = '?level=' + value + '#ctd';
+    var search = '?level=' + value + '/#ctd';
     window.location.href = window.location.href.split('?')[0].replace('#','') + search;
 }
 
