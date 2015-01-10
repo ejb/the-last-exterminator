@@ -239,6 +239,18 @@ Level.prototype.spawnBug = function(){
         }
         enemy.timeInDirection++;
         
+        var newVelocity = 30 + that.elapsedTime/800;
+        if (newVelocity > 300) {
+            newVelocity = 300;
+        }
+        // console.log(newVelocity)
+        enemy.velocity = {
+            x: newVelocity,
+            y: newVelocity
+        }
+        
+       
+        
         var pos = enemy.pos;
         if ((pos.y < 10) && (enemy.direction === PixelJS.Directions.Up)) {
             enemy.direction = PixelJS.Directions.Down;
@@ -461,9 +473,9 @@ Level.prototype.fireBullet = function(newPos){
     var that = this;
     var bullets = this.bullets;
     var fired = false;
-    bullets.forEach(function(bullet){
-        // console.log(fired);
-        if (!fired && !bullet.$fired) {
+    for (var i = 0; i < bullets.length; i++) {
+        var bullet = bullets[i];
+        if (!fired && !bullet.$fired && (i%2 === 1)) {
             that.shootSound.play();
             bullet.$fired = true;
             fired = true;
@@ -472,11 +484,12 @@ Level.prototype.fireBullet = function(newPos){
                 y: newPos.y+8
             };
             bullet.$direction = that.player.$lastDirection;
-            setTimeout(function(){
-                bullet.$end();
-            },300);
+            setTimeout((function(){
+                console.log(this, that.bullets, i);
+                this.$end();
+            }).bind(bullet),1000);
         }
-    })
+    }
 }
 
 Level.prototype.bulletImpact = function(entity){
