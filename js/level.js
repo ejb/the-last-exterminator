@@ -104,17 +104,17 @@ Level.prototype.spawnBugs = function(){
     }
 }
 
+Level.prototype.numberOfBuildings = 12;
+
 Level.prototype.spawnBuildings = function(){
     this.buildingLayer = this.game.createLayer('buildings');
-    var numberOfBuildings = 5;
-    for (var i = 0; i < numberOfBuildings; i++) {
+    for (var i = 0; i < this.numberOfBuildings; i++) {
         this.spawnBuilding();
     }
 }
 
 Level.prototype.spawnCollapsedBuildings = function(){
-    var numberOfCollapsedBuildings = 5;
-    for (var i = 0; i < numberOfCollapsedBuildings; i++) {
+    for (var i = 0; i < this.numberOfBuildings; i++) {
         this.spawnCollapsedBuilding();
     }
 }
@@ -272,13 +272,26 @@ Level.prototype.ranDir = function(){
 }
 
 Level.prototype.buildings = [];
+Level.prototype.buildingLocations = {};
 Level.prototype.spawnBuilding = function(){
     var that = this;
     var game = this.game;
     var building = new PixelJS.Entity();
-    building.addToLayer(this.buildingLayer);
-    var x = Math.random() * this.bounds.x;
-    var y = Math.random() * this.bounds.y;
+    building.addToLayer(this.buildingLayer);    
+    
+    // horz: 4 buildings
+    // vert: 3 buildings
+        
+    var x = Math.floor( Math.random() * 4 ) * 200 + 20;
+    var y = Math.floor( Math.random() * 3 ) * 200 + 30;
+    console.log(this.buildingLocations);
+    while (this.buildingLocations[x+''+y]) {
+        x = Math.floor( Math.random() * 4 ) * 200 + 20;
+        y = Math.floor( Math.random() * 3 ) * 200 + 30;
+        
+    }
+    this.buildingLocations[x+''+y] = true;
+    console.log(x,y);
     building.pos = { x: x, y: y };
     building.size = { width: 128, height: 128 };
     building.velocity = { x: 50, y: 50 };
@@ -372,11 +385,11 @@ Level.prototype.stockBullets = function(){
         
         bullet = this.bulletLayer.createEntity();
         bullet.pos = { x: -20, y: -20 };
-        bullet.size = { width: 12, height: 16 };
+        bullet.size = { width: 16, height: 16 };
         bullet.asset = new PixelJS.AnimatedSprite();
         bullet.asset.prepare({
-            name: 'coin.png',
-            frames: 8,
+            name: 'bullet.png',
+            frames: 2,
             rows: 1,
             speed: 80,
             defaultFrame: 0
@@ -420,17 +433,18 @@ Level.prototype.fireBullet = function(newPos){
     var bullets = this.bullets;
     var fired = false;
     bullets.forEach(function(bullet){
+        console.log(fired);
         if (!fired && !bullet.$fired) {
+            bullet.$fired = true;
+            fired = true;
             bullet.pos = {
-                x: newPos.x,
-                y: newPos.y
+                x: newPos.x+8,
+                y: newPos.y+8
             };
             bullet.$direction = that.player.$lastDirection;
-            bullet.$fired = true;
             setTimeout(function(){
                 bullet.$end();
-            },3000);
-            fired = true;
+            },1000);
         }
     })
 }
