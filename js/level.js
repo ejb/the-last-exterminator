@@ -28,6 +28,10 @@ Level.prototype.run = function(){
     this.crySound.prepare({ name: 'cry.wav' });
     this.themeSound = this.game.createSound('theme');
     this.themeSound.prepare({ name: 'theme.wav' });
+    this.winSound = this.game.createSound('win');
+    this.winSound.prepare({ name: 'win.wav' });
+    this.deathSound = this.game.createSound('death');
+    this.deathSound.prepare({ name: 'cry2.wav' });
         
     this.addBackground();
     if (this.opts.noPlayer !== true) {
@@ -387,6 +391,7 @@ Level.prototype.playerCollision = function(entity){
         for (var i = 0; i < enemies.length; i++) {
             if (entity === enemies[i]) {
                 this.playerHealth--;
+                this.deathSound.play();
                 this.endLevel('fail');
                 // console.log('Ouch! Health now at '+this.playerHealth);
                 this.recentlyHit = this.dt;
@@ -507,7 +512,8 @@ Level.prototype.bulletImpact = function(entity){
             // console.log('xxxx', this.enemies, this.enemies.length);
             if (this.enemies.length === 0) {
                 // console.log(this.endLevel);
-                this.endLevel('win');
+                this.winSound.play();
+                this .endLevel('win');
             }
         }
     }

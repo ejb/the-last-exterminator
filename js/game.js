@@ -49,9 +49,14 @@ Game.prototype.startLevel = function(lno){
     var callback = function(endstate){
         var thisLevel = getURLParameter();
         if (endstate === 'win') {
-            setURLParameter( thisLevel+1 );
+            setTimeout(function(){
+                setURLParameter( thisLevel+1 );
+            },2000);
         } else {
-            setURLParameter( thisLevel );
+            $('.splash').addClass('ready').css('background','red');
+            setTimeout(function(){
+                setURLParameter( thisLevel );
+            },1000);
         }
     }
 

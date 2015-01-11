@@ -18,7 +18,7 @@
             font-family: arial;
             font-size: 10px;
         }
-        .splash {
+        .splash, .message {
             height: 100%;
             width: 100%;
             top: 0;
@@ -36,11 +36,20 @@
         .splash.ready.alt {
             background-image: url('assets/sprites/splash2.png');
         }
+        .message {
+            font-size: 50px;
+            font-family: Arial;
+            text-align: center;
+            padding-top: 50px;
+            color: white;
+        }
+        
         </style>
     </head>
     <body>
         <div id="game_container" style="width: 800px; height: 600px;"></div>
         <div class="splash"></div>
+        <div class="message"></div>
         <a id="about" target="_blank" href="https://github.com/ejb/the-last-exterminator">what is this game</a>
     </body>
     
@@ -58,7 +67,7 @@
                 enemies: 3
             },
             {
-                enemies: 5
+                enemies: 10
             },
             {
                 enemies: 50
@@ -68,20 +77,12 @@
                 buildings: 2
             },
             {
-                enemies: 200,
+                enemies: 250,
                 buildings: 12
             },
             {
-                enemies: 300,
-                buildings: 7
-            },
-            {
-                enemies: 400,
-                buildings: 10
-            },
-            {
                 enemies: 500,
-                buildings: 1
+                buildings: 7
             }
         ]);
     </script>
